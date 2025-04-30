@@ -1,0 +1,4 @@
+Parte 1:
+    Se pide una función que recuba un numero entero y devuelva el doble de ese numero.
+Parte 2:
+    Escribir una función que reciba un número entero y reciba el cuadruple de dicho número
