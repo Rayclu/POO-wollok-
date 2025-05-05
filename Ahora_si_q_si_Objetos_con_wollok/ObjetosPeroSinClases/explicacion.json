@@ -1,0 +1,13 @@
+"object":{
+    "atributo":{
+        "a1":"n",
+        "a2":"f",
+        "a3":"nosé"
+    },
+
+    "comportamiento":{
+        "c1": "alimentar",
+        "c2": "jugar",
+        "c3": "etc..."
+    }
+}
