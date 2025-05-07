@@ -10,24 +10,25 @@ mascota:
     } <- podemos llevar a cabo los comportamientos.
 """
 
-def Mascota(atributos:dict)-> dict:
-    import ComportamientosMascota as mthMascota
-    usr_want = atributos["dueño"[input("Do you want to...")]]
+def Mascota(atributos: dict) -> dict:
+    import ObjetosPeroSinClases.mascota.ComportamientosMascota as mthMascota
+    usr_want = input("Do you want to [eat/play/nothing]? ").lower()
     match usr_want:
-        case "comer":
+        case "eat":
             mthMascota.Alimentar(atributos)
-        case "jugar":
+        case "play":
             mthMascota.Jugar(atributos)
-            pass
-        case _:
+        case "nothing":
             mthMascota.Dormir(atributos)
-            pass
-    
+        case _:
+            print("Invalid option.")
+    return atributos
+
 def Estado(atributos:dict)-> dict:
-    import ComportamientosClaseEstado as mthEstado
+    import ObjetosPeroSinClases.estado as mthEstado
 
 def Owner(atributos:dict)-> dict:
-    import ComportamientosUser as mthUser
+    import ObjetosPeroSinClases.user as mthUser
 
 def main():
     while(True):
