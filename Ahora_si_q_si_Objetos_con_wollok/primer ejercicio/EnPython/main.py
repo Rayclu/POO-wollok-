@@ -11,7 +11,7 @@ mascota:
 """
 
 def Mascota(atributos: dict) -> dict:
-    import ObjetosPeroSinClases.mascota.ComportamientosMascota as mthMascota
+    import intermediarios.mascota as mthMascota
     usr_want = input("Do you want to [eat/play/nothing]? ").lower()
     match usr_want:
         case "eat":
@@ -25,27 +25,20 @@ def Mascota(atributos: dict) -> dict:
     return atributos
 
 def Estado(atributos:dict)-> dict:
-    import ObjetosPeroSinClases.estado as mthEstado
+    import intermediarios.estado as mthEstado
 
 def Owner(atributos:dict)-> dict:
-    import ObjetosPeroSinClases.user as mthUser
+    import intermediarios.user as mthUser
 
 def main():
+    import intermediarios.user as usr
+    import intermediarios.mascota as mascota
+    import intermediarios.estado as state
+
     while(True):
-        nombreMascota:str
-        if not(nombreMascota):
-          # nombreMascota = input("")
-           nombre = input("The pet is still waiting its name, what is that?")
-        else:
-            pass
-        pet:dict = Mascota({
-                "name" : nombre,
-                "trick" : [],
-                "owner" : Owner({}),
-                "state" : Estado({})
-            })
-        
-        
-        if(input("Do you want to exit?, if the answer is yes write <exit> else write another one string pls").lower() == "exit"):
+        user = usr.CrearNuevoUsuario(input("Enter your name: "))
+        pet = mascota.crearMascota(user, input("Enter the name of your pet: "), input("Enter the type of pet: "))
+        print(pet)
+        if(input("Do you want to exit?, if the answer is yes write <exit>:\n\t").lower() == "exit"):
             break
 main()
