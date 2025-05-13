@@ -8,7 +8,6 @@ using namespace std;
 
 class lanzador{
     private:
-        string name; // Nombre que se puso el usr
         string arm; // Arma del usr
         string species; // Especie elegida por el usr.
         vector<string> PossibleArms = {"Pistol", "Shotgun", "DoubleShoot", "minigun", "Sniper"};
@@ -17,8 +16,10 @@ class lanzador{
         void relectArm(); 
         
     public:
+        string name; // Nombre que se puso el usr
         int health; // Vida del usr, por ahora está como un dato más, la idea es que luego pueda bajar con cada disparo recibido
         friend  ostream& operator<<(ostream& os, const lanzador& l);
+        int evasivness = 5; // porcentaje de esquivacion.
         vector<babosa*> arsenal; // Babosas del usr.
         lanzador(
             vector<babosa*> arsenal,
@@ -26,7 +27,7 @@ class lanzador{
             string arm,
             string species
          );
-        void charge();
+        int charge();
         bool ChargedSlug;
         pair<int, bool> disparar();
         ~lanzador();
@@ -137,23 +138,27 @@ void lanzador::relectArm(){
     }
     
 }
-void lanzador::charge() {
+int lanzador::charge() {
     cout << "Cargando el arma..." << endl;
     sleep(3);
     if(!this->arsenal.empty()){
         this->nextSlug = this->arsenal.front();
         this->arsenal.erase(this->arsenal.begin());
     }else{
-        cout << "No hay mas babosas en el arsenal, Fin." << endl;
+        cout << "No hay mas babosas en el arsenal, Fin." << endl; 
+        int endOfProgram = -1;
+        return endOfProgram;
     }
     this->ChargedSlug = true;
     cout << "Arma cargada!" << endl;
+    return 0;
 }
 
 pair<int, bool> lanzador::disparar(){
-    charge();
+    int res_charge = charge();
+    if (res_charge != 0) return {-2, false};
     if(this->nextSlug == nullptr) return {-1, false};
-    int assert = rand() % 101;
+    int assert = this->species == "Human" ? rand() % 101 : (this->species == "Flajelo" || this->species == "Troll" ? rand()% 200 : rand() % 75 );
     bool usrHitTheShoot = assert <= 50 ? true : false ; 
     cout << "Que quieres hacer, atacar, defender o utilidades <0,1 o 2 respectivamente>" << endl;
     int mov;
@@ -177,7 +182,7 @@ pair<int, bool> lanzador::disparar(){
         }
     
     
-    return {0, usrHitTheShoot};
+    return {mate.second, usrHitTheShoot};
 }
 
 lanzador::~lanzador() {
@@ -189,6 +194,12 @@ lanzador::~lanzador() {
     }
 }
 
+int endingVersus(lanzador& lanzador1, lanzador& lanzador2){
+    int health_1 = lanzador1.health; int health_2 = lanzador2.health;
+    if (health_1 < health_2) return 1;
+    if (health_2 < health_2) return 2;
+    return -1;
+}
 int main(int argc, char const *argv[]){ 
     // Los  argumentos de esta funcion no se usan pues la declaré con la plantilla
     // y ya venían implementados, y al quitarlos tira error, debo
@@ -196,7 +207,7 @@ int main(int argc, char const *argv[]){
 
     //%%%%%%%%%%%%%%%%%%%%%%%%_Arsenal 1_%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     vector<babosa*> arsenal = {
-        new babosa(true, "Inferno", 150,
+        new babosa(true, "Inferno", rand()%210,
             vector<pair<string, int>>{
                     {"Fireball", 100},
                     {"Firestorm", 200},
@@ -209,7 +220,7 @@ int main(int argc, char const *argv[]){
                     {"Fly", 10000000}
             }
         ),
-        new babosa(false, "arañita", 59,
+        new babosa(false, "arañita", rand() % 210,
             vector<pair<string, int>>{
                     {"Trampaña", 0},
                     {"AracniCeguera", 200},
@@ -221,7 +232,7 @@ int main(int argc, char const *argv[]){
                     {"Columpio Aracnido", 20000000}
             }
         ),
-        new babosa(false, "Jules", 150,
+        new babosa(false, "Jules", rand() % 210,
             vector<pair<string, int>>{
                     {"Trueno", 150},
                     {"Cortocircuito", 500}
@@ -241,7 +252,7 @@ int main(int argc, char const *argv[]){
     );
     //------------------------------------------Babosa4
     babosa InfernoNormal(
-        false, "Inferno", 150,
+        false, "Inferno", rand() % 210,
         vector<pair<string, int>>{
                 {"Fireball", 100},
                 {"Firestorm", 200},
@@ -256,7 +267,7 @@ int main(int argc, char const *argv[]){
     );
     //------------------------------------------Babosa5
     babosa AracniredMalvada(
-        true, "arañita", 59,
+        true, "arañita", rand() % 210,
         vector<pair<string, int>>{
                 {"Trampaña", 0},
                 {"AracniCeguera", 200}
@@ -270,7 +281,7 @@ int main(int argc, char const *argv[]){
     );
     //------------------------------------------Babosa6
     babosa ElectroshcokMalvada(
-        true, "Jules", 150,
+        true, "Jules", rand() %210,
         vector<pair<string, int>>{
                 {"Trueno", 150},
                 {"Cortocircuito", 500}
@@ -285,7 +296,7 @@ int main(int argc, char const *argv[]){
     //%%%%%%%%%%%%%%%%%%%%%%%%_Arsenal 2_%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     vector<babosa*> arsenal2 = {
-        new babosa(false, "Inferno", 150,
+        new babosa(false, "Inferno", rand() % 210,
             vector<pair<string, int>>{
                     {"Fireball", 100},
                     {"Firestorm", 200},
@@ -298,7 +309,7 @@ int main(int argc, char const *argv[]){
                     {"Fly", 10000000}
             }
         ),
-        new babosa(true, "arañita", 59,
+        new babosa(true, "arañita", rand() % 210,
             vector<pair<string, int>>{
                     {"Trampaña", 0},
                     {"AracniCeguera", 200},
@@ -329,13 +340,6 @@ int main(int argc, char const *argv[]){
     );
         // Imprimir lanzador
     cout << EliShane << endl;
-
-    // if(EliShane.ChargedSlug){
-    //     EliShane.disparar();
-    // }else if(EliShane.arsenal.empty()){
-    //     EliShane.health = 0;
-    // }
-
     // Imprimir una babosa específica
     //cout << *arsenal[0] << endl;
 
@@ -344,12 +348,60 @@ int main(int argc, char const *argv[]){
     do{
         
         int FirstShoot = rand() % 2;
-        
-        if(FirstShoot == 1){
-            pair<int, bool> res = Pronto.disparar();
-           // res.second ? EliShane.health-= damage : null;
+        cout << FirstShoot << "\n" << endl;
+        int evasivness = rand() % 10;
+        if(FirstShoot == 1){ // Dispara pronto, Eli pierde vida si es que no consigue esquivar
+            pair<int, bool> res = Pronto.disparar(); // desenpaqueto lo devuelto por el metodo disparar (pair<int, bool>)
+            if (res.first == -2) {
+                cout << "A" << Pronto.name << "no le quedan babosas que disparar. Fin" << endl;
+                break;
+
+            };
+           // Debug _________________________________________________________________________________________________________________________________
+            // string out = res.second ? "Acierto \0" : "Fallo \0"; // verifico que se haya acertado el disparo.
+            // cout << "El resultado el disparo fué: " << out << "\nCon un resultado de: "<< res.second << endl; // Imprimo el resultado
+            //_____________________________________________________________________________________________________________________________________
+            if(res.second){ 
+                if(evasivness <= EliShane.evasivness ){ // Si la evasion es menor a el entero definida en la propidad
+                    EliShane.health -= res.first; // Prota1 pierde vida
+                    cout << "La vida de Eli bajó a:" << EliShane.health << endl; // Muestro por terminal a cuanto bajo la vida
+                } else {
+                    cout << "El disparo fué esquivado..." << endl;
+                }
+                // cout << Pronto.health << endl;
+                
+            }
+        }else{ // viceversa
+            pair<int, bool> res = EliShane.disparar(); 
+            if (res.first == -2) {
+                cout << "A " << EliShane.name << " no le quedan babosas que disparar. Fin" << endl;
+                break;
+            };
+            if(res.second){
+                if( evasivness <= Pronto.evasivness){
+                    Pronto.health -= res.first;
+                    cout << "La vida de Pronto bajó a:" << Pronto.health << endl;
+                } else {
+                    cout << "El disparo fué esquivado" << endl;
+                }
+            }
+            
         }
-    } while ( EliShane.health >= 1 && Pronto.health >= 1 );
+    }while( EliShane.health >= 1 && Pronto.health >= 1 );
+    int winner = endingVersus(Pronto, EliShane);
+    switch (winner){
+        case 1:
+            cout << "Pronto gana." << endl;
+            return 0;
     
-    return 0; // Aviso que el programa se ejecutó correctamente.
+        case 2: 
+            cout << "Eli gana." << endl;
+            return 0; 
+        default:
+            cout << "Empate" << endl;
+            return -1; // xD
+    }
+    
+    
+    //return 0; // Aviso que el programa se ejecutó correctamente.
 }

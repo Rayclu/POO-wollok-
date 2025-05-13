@@ -101,7 +101,7 @@ pair <string, int> babosa::MovUtilidad() {
     return this->Disparo(this->utilities);
 }
 
-
+/*
 int main() { // Testeo del funcionamiento de la clase
      babosa Inferno(true, "Inferno", 150,
              vector<pair<string, int>>{
@@ -144,3 +144,4 @@ int main() { // Testeo del funcionamiento de la clase
 
      return 0;
  }
+*/
