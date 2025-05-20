@@ -1,0 +1,53 @@
+Object -> cosas que puede hacer (comportamiento), interactuar con otro objeto o modificarse (estado interno) 
+    |-> atributos -> propiedades del objeto -> pueden ser varibles
+    |-> metodos -> 
+    |-> Encapsulamiento -> Pensar q funciones y variables no están separadas, que nadie puede cambiar esas variables salvo sus funciones internas.
+
+UML -> Lenguaje de modelado unificado.
+ |
+ |\-> diagramas de clases
+ |\->
+
+Actividad:
+    Modelar un programa con un par de objetos (2 o mas) e imaginar como van a funcionar. Luego armar un programa que pueda representar lo imaginado
+
+    +----------------------------+
+    |        Usuario             |
+    +----------------------------+
+    |           -Nombre          |
+    |           -Mascota         |
+    |           -LogrosMascota   |
+    +----------------------------+
+    |           -Premiar         |
+    |           -Alimentar       |
+    |           -Jugar           |
+    +----------------------------+
+
+
+
+    +----------------------------+
+    |          Mascota           |
+    +----------------------------+
+    |           -Nombre          |
+    |           -Estado          |
+    |           -Trucos          |
+    |           -Dueño           |
+    +----------------------------+
+    |        -Alimentar          |
+    |        -Jugar              |
+    |        -Dormir             |
+    +----------------------------+
+
+    +----------------------------+
+    |          Estado            |
+    +----------------------------+
+    |                            |
+    |           -Hambre          |
+    |           -Sueño           |
+    |           -Sed             |
+    |           -Felicidad       |
+    +----------------------------+
+    |                            |
+    |        -Alimentar          |
+    |        -Jugar              |
+    +----------------------------+

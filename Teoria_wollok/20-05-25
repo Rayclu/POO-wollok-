@@ -1,0 +1,14 @@
+Wollok no se compila (interpretado)
+Hay una libreria (wollok games) para crear videojuegos.
+Se pueden crear objetos sin clases.
+
+Palabras reservadas:
+    object
+    method
+    class
+
+    var 
+    let
+    const
+
+    
