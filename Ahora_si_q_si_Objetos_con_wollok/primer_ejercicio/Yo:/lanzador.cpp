@@ -5,7 +5,6 @@
 #include <unistd.h> // Para la función sleep
 #include <variant>
 using namespace std;
-
 class lanzador{
     private:
         string arm; // Arma del usr
@@ -16,28 +15,30 @@ class lanzador{
         void relectArm(); 
         
     public:
-        string name; // Nombre que se puso el usr
         int health; // Vida del usr, por ahora está como un dato más, la idea es que luego pueda bajar con cada disparo recibido
-        friend  ostream& operator<<(ostream& os, const lanzador& l);
         int evasivness = 5; // porcentaje de esquivacion.
+        int charge();
+
+        string name; // Nombre que se puso el usr
         vector<babosa*> arsenal; // Babosas del usr.
+        
         lanzador(
             vector<babosa*> arsenal,
             string name,
             string arm,
             string species
         );
-        int charge();
         bool ChargedSlug;
         pair<int, bool> disparar();
         ~lanzador();
+        friend  ostream& operator<<(ostream& os, const lanzador& l);
 };
 
 ostream& operator<<(ostream& os, const lanzador& l) {
     /*
-    Metodo que UNICAMENTE está hecho para pruebas, o sea, sobrecarga el 'cout' para poder mostrar el objeto en la terminal.
+    Metodo que UNICAMENTE está hecho para pruebas, o sea, sobrecargae a 'cout' para poder mostrar el objeto en la terminal.
     La idea es que luego se pueda mostrar el arsenal con el que se cuenta, pero ya la comuniocacion es posible pues compíla y recibe las ba-
-    bosas hardcodeadas, proximo objetivo que se ingresen mediante terminal.
+    bosas hardcodeadas, proximo objetivo que se ingresen mediante terminal. 
     */
     os << "Nombre: " << l.name << "\n";
     os << "Especie: " << l.species << "\n";
@@ -64,25 +65,25 @@ lanzador:: lanzador(
     this->species = species; // Especie que se ha elegido, topoide, humano, trol, etc.
 
     if (this->species == "Human"){  // ** Caracteristicas del humano ** || Probable sub-objeto
-            this->health = 100; 
+            this->health = 1000; 
             if(this->arm == "minigun" || this->arm == "Sniper"){
                 cout << "El humano no puede usar minigun o snipers, se le asignará una pistola" << endl;
                 this->relectArm();
             }
     } else if (this->species == "Topo"){  //  ** Caracteristicas del topo ** || Probable sub-objeto
-            this->health = 80;
+            this->health = 800;
             if(this->arm == "DoubleShoot" || this->arm == "Minigun"){
                 cout << "El topo no puede usar este arma, se le asignará un francotirador" << endl;
                 this->relectArm();
             }
     } else if(this->species == "Troll"){  // ** Caracteristicas del trol ** || sub-objeto.
-            this->health = 150;
+            this->health = 1500;
             if(this->arm == "Pistol" || this->arm == "Doubleshoot"){
                 cout << "El troll no puede usar pistola, se le asignará una escopeta" << endl;
                 this->relectArm();
             }
     } else{  //  ** Caracteristicas del flajelo **  || sub-objeto
-            this->health = 170;
+            this->health = 2000;
             if(this->arm != "minigun"){
                 cout << "El flajelo solo puede usar la minigun, se le asignará la misma" << endl;
                 this->arm = "minigun";
@@ -94,6 +95,7 @@ lanzador:: lanzador(
 void lanzador::relectArm(){ 
     //  **Funcion para reasignar el arma del lanzador si es que es 
     //  *incompatible con el mismo
+    
     if(this->species == "Human"){
         cout << "Elija un nuevo arma <0:pistol, 1:Doubleshoot>" <<endl; 
         int arm;
@@ -109,7 +111,6 @@ void lanzador::relectArm(){
                 cout << "sos bolud@? ARMA INVALIDA" << endl;
                 break;
         }
-
     }else if ( this->species == "Troll" ){
         cout << "Elija un nuevo arma <0:minigun, 1:shotgun>" <<endl;
         int arm;
@@ -170,12 +171,15 @@ pair<int, bool> lanzador::disparar(){
      * tiro debió de impactar en el rival. 
      * Cabe aclarar que se puden tnerexepciones como que por ejemplo no queden babosas en
      * el arsenal, en esos casos se devuelve -2 indicando este posible caso.
-    */
+    */  
+    srand((unsigned)time(0));
 
     int res_charge = charge();
+    cout << res_charge << endl;
     if (res_charge != 0) return {-2, false}; // Si no quedan babosas. 
     if(this->nextSlug == nullptr) return {-1, false}; // Si se produjo un error interno.
 
+    cout << "Res_charge -> " << res_charge << "\n" << "NextSlug ->  " << this->nextSlug << endl;
     /**
      * Rangos en los que puede caer el numero de apuntado del usr (si supera los 50 no se lo considera como acertado) 
      * topo : 0, 75,
@@ -183,30 +187,33 @@ pair<int, bool> lanzador::disparar(){
      * troll : 0, 200
      * humano : 0, 100
      */
-    
-    int assert = this->species == "Human" ? rand() % 101 : (
+    int assert = this->species == "Human" ? rand()% 101 : (
         this->species == "Flajelo" || this->species == "Troll" ? rand()% 201 : rand()% 76
     ); // Segun la especie, asigno un chance de acertar el disparo
-
+    //cout << "Assert -> " << assert << endl;
+    
     bool usrHitTheShoot = assert <= 50 ? true : false ; 
     cout << "Que quieres hacer, atacar, defender o utilidades <0,1 o 2 respectivamente>" << endl;
-    
-    int mov; 
-    cin >> mov; // input
+
+    int mov; cin >> mov;
     pair<string, int> mate; // variable en la que se guardará la data del disparo proveniente de la babosa
+    
     switch (mov){ // posibles casos de uso.
         case 0:
             cout << "Se hará un movimiento ofensivo." << endl;
             mate = this->nextSlug->Ataques();
+            cout << "Debug-------------------------\n" << mate.first << mate.second << endl;
             break;
         case 1:
             cout << "Se hará un movimiento defensivo." << endl;
             mate = this->nextSlug->Defensa();
+            cout << "Debug-------------------------\n" << mate.first << mate.second << endl;
              
             break;
         case 2:
             cout << "Se hará un movimiento de utilidad no espere hacer daño." << endl;
             mate = this->nextSlug->MovUtilidad();
+            cout << "Debug-------------------------\n" << mate.first << mate.second << endl;
             break;
         
         default:
@@ -228,8 +235,18 @@ lanzador::~lanzador() {
 
 int endingVersus(lanzador& lanzador1, lanzador& lanzador2){
     int health_1 = lanzador1.health; int health_2 = lanzador2.health;
-    if (health_1 < health_2) return 1;
-    if (health_2 < health_2) return 2;
+    if (health_1 < health_2) { 
+        printf(
+            "Vida final de %d.\n Y la vida final del contrincante es %d", lanzador1.health,
+            lanzador2.health
+        ); return 1; 
+    }
+    if (health_2 < health_1) { 
+           printf(
+            "Vida final de %d.\n Y la vida final del contrincante es %d", lanzador2.health,
+            lanzador1.health
+        ); return 2; 
+    }
     return -1;
 }
 
@@ -237,8 +254,9 @@ int main(int argc, char const *argv[]){
     // Los  argumentos de esta funcion no se usan pues la declaré con la plantilla
     // y ya venían implementados, y al quitarlos tira error, debo
     // ver que está pasando con eso xDD. 
-
+    
     //%%%%%%%%%%%%%%%%%%%%%%%%_Arsenal 1_%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     vector<babosa*> arsenal = {
         new babosa(true, "Inferno", rand()%210,
             vector<pair<string, int>>{
@@ -253,7 +271,7 @@ int main(int argc, char const *argv[]){
                     {"Fly", 10000000}
             }
         ),
-        new babosa(false, "arañita", rand() % 210,
+        new babosa(false, "arañita", rand()% 210,
             vector<pair<string, int>>{
                     {"Trampaña", 0},
                     {"AracniCeguera", 200},
@@ -265,7 +283,7 @@ int main(int argc, char const *argv[]){
                     {"Columpio Aracnido", 20000000}
             }
         ),
-        new babosa(false, "Jules", rand() % 210,
+        new babosa(false, "Jules", rand()% 210,
             vector<pair<string, int>>{
                     {"Trueno", 150},
                     {"Cortocircuito", 500}
@@ -285,7 +303,7 @@ int main(int argc, char const *argv[]){
     );
     //------------------------------------------Babosa4
     babosa InfernoNormal(
-        false, "Inferno", rand() % 210,
+        false, "Inferno", rand()% 210,
         vector<pair<string, int>>{
                 {"Fireball", 100},
                 {"Firestorm", 200},
@@ -300,7 +318,7 @@ int main(int argc, char const *argv[]){
     );
     //------------------------------------------Babosa5
     babosa AracniredMalvada(
-        true, "arañita", rand() % 210,
+        true, "arañita", rand()% 210,
         vector<pair<string, int>>{
                 {"Trampaña", 100},
                 {"AracniCeguera", 200}
@@ -314,7 +332,7 @@ int main(int argc, char const *argv[]){
     );
     //------------------------------------------Babosa6
     babosa ElectroshcokMalvada(
-        true, "Jules", rand() %210,
+        true, "Jules", rand()%210,
         vector<pair<string, int>>{
                 {"Trueno", 150},
                 {"Cortocircuito", 500}
@@ -329,7 +347,7 @@ int main(int argc, char const *argv[]){
     //%%%%%%%%%%%%%%%%%%%%%%%%_Arsenal 2_%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     vector<babosa*> arsenal2 = {
-        new babosa(false, "Inferno", rand() % 210,
+        new babosa(false, "Inferno", rand()% 210,
             vector<pair<string, int>>{
                     {"Fireball", 100},
                     {"Firestorm", 200},
@@ -342,7 +360,7 @@ int main(int argc, char const *argv[]){
                     {"Fly", 10000000}
             }
         ),
-        new babosa(true, "arañita", rand() % 210,
+        new babosa(true, "arañita", rand()% 210,
             vector<pair<string, int>>{
                     {"Trampaña", 100},
                     {"AracniCeguera", 200},
@@ -379,9 +397,9 @@ int main(int argc, char const *argv[]){
     cout << Pronto << endl;
     //cout << *arsenal2[0] << endl;
     do{
-        int FirstShoot = rand() % 2;
+        int FirstShoot = rand()% 2;
         // cout << FirstShoot << "\n" << endl;
-        int evasivness = rand() % 10;
+        //int evasivness = rand()% 10;
         //  ----------------------------------------------------  Dispara pronto, Eli pierde vida ------------------
         if(FirstShoot == 1){ 
             cout << "###########################" << "\n" << "Dispara pronto pierde vida Eli: " << endl;
@@ -394,17 +412,16 @@ int main(int argc, char const *argv[]){
                 break;
 
             };
-           
-            cout << "debug:" << "\n" << "\t Esquivado:\n\t\t" << evasivness << endl;
+            
             if(res.second){ 
-                if(evasivness <= EliShane.evasivness ){ // Si la evasion es menor a el entero definida en la propidad
+                //if(evasivness <= EliShane.evasivness ){ // Si la evasion es menor a el entero definida en la propidad
                     cout << "debug:" << "\n" << "\t Res_disparo (Pronto ataca):\n\t\t" << res.first << endl;
                     EliShane.health -= res.first; // Prota1 pierde vida
                     cout << "La vida de Eli bajó a:" << EliShane.health << endl; // Muestro por terminal a cuanto bajo la vida
-                } else {
+                //} else {
                     cout << "El disparo fué esquivado..." << endl;
-                }
-                // cout << Pronto.health << endl;
+               // }
+                    // cout << Pronto.health << endl;
                 
             }
         }else{ // viceversa
@@ -417,19 +434,20 @@ int main(int argc, char const *argv[]){
             };
             cout << "debug:" << "\n" << "\t Acierto (Pronto):\n\t\t" << res.second << endl;
             if(res.second){
-                if( evasivness <= Pronto.evasivness){
+                //if( evasivness <= Pronto.evasivness){
                     Pronto.health -= res.first;
                     cout << "debug:" << "\n" << "\t Res_disparo (Eli ataca):\n\t\t" << res.first << endl;
 
                     cout << "La vida de Pronto bajó a:" << Pronto.health << endl;
-                } else {
+                //} else {
                     cout << "El disparo fué esquivado" << endl;
-                }
+                //}
             }
             
         }
     }while( EliShane.health >= 1 && Pronto.health >= 1 && !Pronto.arsenal.empty() && !EliShane.arsenal.empty() );
     int winner = endingVersus(Pronto, EliShane);
+    
     switch (winner){
         case 1:
             cout << "Pronto gana." << endl;
@@ -442,7 +460,4 @@ int main(int argc, char const *argv[]){
             cout << "Empate" << endl;
             return -1; // xD
     }
-    
-    
-    //return 0; // Aviso que el programa se ejecutó correctamente.
 }

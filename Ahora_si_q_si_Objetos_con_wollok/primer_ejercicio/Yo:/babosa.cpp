@@ -1,34 +1,24 @@
 #include <vector>
 #include <string>
-//#include <map>
 #include <malloc.h>
 #include <cstdlib> // Para rand()
 #include <stdio.h>
 #include <iostream>
 
 using namespace std;
-/*typedef struct {
-            string nombre;
-            vector<pair<string, int>> attack_moves;
-            vector<pair<string, int>> defense_moves;
-            vector<pair<string, int>> utilities; // Corregido: utilities
-            int speed;
-            bool isEvil;
-        } Slug;*/
-
 class babosa {
     private:
+        int speed; // Velocidad de la babosa
+        bool isEvil; // Indica si la babosa es malvada o no
+
         string nombre;
         vector<pair<string, int>> attack_moves; // Movimientos de ataque
         vector<pair<string, int>> defense_moves; // Movimientos de defensa
         vector<pair<string, int>> utilities; // Movimientos de utilidad
-        int speed; // Velocidad de la babosa
-        bool isEvil; // Indica si la babosa es malvada o no
-
         pair<string, int> GetRandomMove(int PlusMove,const vector<pair<string, int>> &moves);
-        
-        
+
     public:
+
         static constexpr int VELOCIMORPHISMO = 120; // Velocidad que necesitan las babosas para transformarse
         static constexpr int MEGAMORPHISMO = 200; // Velocidad que necesitan las babosas para sufrir la megamorfosis
         babosa(
@@ -60,6 +50,7 @@ babosa::babosa(bool isEvil, string slugName, int speed,
 
 
 babosa::~babosa(){
+    
 }
 
 pair<string, int> babosa::GetRandomMove(int PlusMove,const vector<pair<string, int>> &moves){
