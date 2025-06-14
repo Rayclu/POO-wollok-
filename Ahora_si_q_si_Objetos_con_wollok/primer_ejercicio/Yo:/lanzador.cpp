@@ -250,6 +250,7 @@ int endingVersus(lanzador& lanzador1, lanzador& lanzador2){
     return -1;
 }
 
+/*
 int main(int argc, char const *argv[]){ 
     // Los  argumentos de esta funcion no se usan pues la declaré con la plantilla
     // y ya venían implementados, y al quitarlos tira error, debo
@@ -396,6 +397,7 @@ int main(int argc, char const *argv[]){
 
     cout << Pronto << endl;
     //cout << *arsenal2[0] << endl;
+    
     do{
         int FirstShoot = rand()% 2;
         // cout << FirstShoot << "\n" << endl;
@@ -461,3 +463,5 @@ int main(int argc, char const *argv[]){
             return -1; // xD
     }
 }
+
+*/
