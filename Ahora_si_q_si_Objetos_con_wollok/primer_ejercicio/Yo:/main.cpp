@@ -11,6 +11,12 @@
 
 
 using namespace std;
+struct WindowLimits
+{
+    int xInit, xEnd;
+    int yInit, yEnd;
+};
+
 SDL_Point generatePoints(){
     SDL_Point finalPoint = {
         rand()%SCREEN_WIDTH, // x
@@ -19,43 +25,29 @@ SDL_Point generatePoints(){
     return finalPoint;
 }
 void OutLimits(int * ejeX, int * ejeY, bool reverse){
-    cout << reverse << endl;
+
     int switchCondition = reverse ? 0 : 1;
-    if(reverse){
-        if(*ejeX <= 0){
-            *ejeX = SCREEN_WIDTH;
-        }
-        if(*ejeY <= 0){
-            *ejeY = SCREEN_HEIGHT;
-        }
-    }else{
-
-        if(*ejeX <= SCREEN_WIDTH){
-            printf("The X is %d", *ejeX);
-            *ejeX = 0;
-        }
-        if(*ejeY <= SCREEN_HEIGHT){
-            printf("The Y is %d", *ejeY);
-
+    if(*ejeY > SCREEN_HEIGHT || *ejeY < 0){
+        reverse ? 
+            *ejeY = SCREEN_HEIGHT
+            :
             *ejeY = 0;
-        }
-    }
-   /* if(*nocParaQueVoy_a_UsarEstoY > SCREEN_HEIGHT || *nocParaQueVoy_a_UsarEstoY < 0){
-        if(reverse){
-            cout << reverse << endl;
-            cout << *nocParaQueVoy_a_UsarEstoY << endl;
-             *nocParaQueVoy_a_UsarEstoY = 8;
-            };
-        *nocParaQueVoy_a_UsarEstoY = 0;
     }
 
-    if(*nocParaQueVoy_a_UsarEstoX > SCREEN_WIDTH || *nocParaQueVoy_a_UsarEstoX < 0){
-        if(!reverse) *nocParaQueVoy_a_UsarEstoX = 8;
-        *nocParaQueVoy_a_UsarEstoX = SCREEN_WIDTH;
+    if(*ejeX > SCREEN_WIDTH || *ejeX < 0){
+        reverse ? 
+            *ejeX = SCREEN_WIDTH
+            :
+            *ejeX = 0;
     }
-    */
+    
 }
-
+void* getPoints(int* currX, int* currY, int* currY2, int* currX2){
+    SDL_Point Points[] = {
+        {*currX, *currY},{*currX, *currY2}, {*currX2, *currY}, {*currX2, *currY2}
+    };
+    return &Points;
+}
 int main(int argc, char const *argv[])
 {
     typedef struct {
@@ -71,14 +63,18 @@ int main(int argc, char const *argv[])
     App app;
     SDL_Init(SDL_INIT_EVERYTHING);
     int rendererFlags, windowFlags;
-    
+
     rendererFlags = SDL_RENDERER_ACCELERATED;
 
     windowFlags = 0;
+    WindowLimits lims = {
+        0, SCREEN_WIDTH,
+        0, SCREEN_HEIGHT
+    };
 
-    app.window = SDL_CreateWindow("SlugTerra Shooter", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
+    app.window = SDL_CreateWindow("SlugTerra Shooter", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, lims.xEnd, lims.yEnd, windowFlags);
     app.renderer = SDL_CreateRenderer(app.window, -1, 0);
-     
+
     bool runningProgram = true;
     SDL_Event event;
 
@@ -87,10 +83,19 @@ int main(int argc, char const *argv[])
     int currX2 = SCREEN_WIDTH;
     int currY2 = SCREEN_HEIGHT;
     while (runningProgram){
-        
+
         SDL_SetRenderDrawColor(app.renderer, 0, 0,0, 255);
 
         SDL_RenderClear(app.renderer);
+        SDL_SetRenderDrawColor(app.renderer, 255, 255, 0, 255);
+
+        // SDL_Point Points[] = {
+        //     {currX, currY},{currX, currY2}, {currX2, currY}, {currX2, currY2}
+        // };
+
+        
+
+        SDL_RenderDrawPoints(app.renderer,  *getPoints(&currX, &currY, &currY2, &currX), 100);
 
         SDL_SetRenderDrawColor(app.renderer, 100, 200, 200, 100);
         SDL_RenderDrawLine(
@@ -132,7 +137,6 @@ int main(int argc, char const *argv[])
         currY2 -= 8; //y reversa
         OutLimits(&currX2, &currY2, true); // Recolocar lineas en sentido anti-horario
 
-        SDL_SetRenderDrawColor(app.renderer, 255, 0, 0, 255);
 
         SDL_RenderPresent(app.renderer);
         while (SDL_PollEvent(&event)){

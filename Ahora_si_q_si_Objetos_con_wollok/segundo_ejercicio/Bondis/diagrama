@@ -1,0 +1,17 @@
++----------------------------------+
+|   Bondi                          |
++----------------------------------+
+|   tanque                         |
+|   PasajerosMax                   |
+|   velocidadMax                   |
+|   CalcularCombustible            |
+|   UbicacionActual                |
+|   Paradas                        |
++----------------------------------+
+|   CalcularCombustible            |
+|   bajarPasajeros                 |
+|   subirPasajeros                 |
+|   EstaLleno                      |
+|   Acelerar                       |
+|   CobrarPasajes                  |
++----------------------------------+
