@@ -73,7 +73,7 @@ persona* poppet(ColaEspera *Queue, int *index) {
     return proc; // Retornar el proceso extraído
 }
 
-void displayQueue(ColaEspera *q) {
+void display(ColaEspera *q) {
     if (q->front == -1) {
         printf("Queue is empty.\n");
     } else {
@@ -88,7 +88,7 @@ void displayQueue(ColaEspera *q) {
     }
 }
 
-ColaEspera* HaveThereSomeoneWithPriority(ColaEspera *q) {
+ColaEspera* HaveThereSomeoneWithPriority(ColaEspera *q) { // Filterr by priority
     ColaEspera* AdminQueue =  (ColaEspera*) malloc(sizeof(ColaEspera));
     if (AdminQueue == NULL) {
         return NULL; // Manejo de error en la asignación de memoria
