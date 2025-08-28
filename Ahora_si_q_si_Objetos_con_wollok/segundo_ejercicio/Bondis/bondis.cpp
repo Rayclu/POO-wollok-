@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ctime>
 
-#include "paradas.cpp"
+#include "../Parada/paradas.cpp"
 using namespace std;
 
 class bondi
